@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071a23">
+  <title>The Crimson Key — Bahrain National Day Science Escape</title>
+  <style>
+    :root {
+      --ink: #f5f2e9;
+      --muted: #9eb0b1;
+      --night: #06151b;
+      --panel: #0c252c;
+      --panel2: #12333a;
+      --gold: #f0c36a;
+      --red: #c9414f;
+      --red2: #762a37;
+      --cyan: #62d4cf;
+      --lime: #a7d46f;
+      --shadow: 0 22px 65px rgba(0,0,0,.42);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--night); color: var(--ink); }
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; overflow-x: hidden; }
+    button { font: inherit; }
+    button:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .app { min-height: 100vh; position: relative; isolation: isolate; }
+    .app::before { content:""; position: fixed; inset: 0; z-index: -2; background:
+      radial-gradient(circle at 20% 0%, rgba(49,132,128,.22), transparent 35%),
+      linear-gradient(140deg, #06151b 0%, #0a2028 52%, #07171d 100%); }
+    .app::after { content:""; position: fixed; inset:0; z-index:-1; opacity:.24; pointer-events:none;
+      background-image: linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
+      background-size: 38px 38px; mask-image: linear-gradient(to bottom, black, transparent 88%); }
+    .screen { min-height: 100vh; display: none; }
+    .screen.active { display: flex; }
+
+    /* Landing */
+    #home { flex-direction: column; padding: 24px clamp(22px,5vw,76px) 44px; background:
+      radial-gradient(circle at 78% 26%, rgba(201,65,79,.20), transparent 28%),
+      linear-gradient(145deg,rgba(3,11,15,.2),rgba(32,8,15,.42)); }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:18px; width:100%; max-width:1240px; margin:0 auto; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .ncst-logo-wrap { width:clamp(210px,26vw,360px); padding:7px 12px; border-radius:10px; background:rgba(255,255,255,.94); box-shadow:0 0 24px rgba(255,255,255,.08); }
+    .ncst-logo-wrap img { display:block; width:100%; height:auto; }
+    .sound-btn, .utility-btn { border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.04); color:var(--ink); border-radius:999px; padding:9px 14px; cursor:pointer; }
+    .hero { max-width:1240px; width:100%; margin:auto; padding:32px 0 24px; }
+    .hero-stage { min-height:390px; position:relative; display:grid; grid-template-columns:1.08fr .92fr; align-items:center; overflow:hidden; border:1px solid rgba(255,255,255,.1); border-radius:28px; padding:44px clamp(28px,5vw,68px); background:
+      linear-gradient(110deg,rgba(7,19,24,.98) 0 53%,rgba(36,9,17,.82) 75%,rgba(9,18,22,.94)),
+      repeating-linear-gradient(0deg,transparent 0 23px,rgba(255,255,255,.02) 24px 25px); box-shadow:var(--shadow); }
+    .hero-stage::before { content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 76% 48%,rgba(203,33,57,.24),transparent 33%); }
+    .hero-copy { position:relative; z-index:4; }
+    .occasion { color:#fff; font-size:11px; letter-spacing:.26em; text-transform:uppercase; font-weight:800; margin:0 0 18px; text-shadow:0 0 12px rgba(255,255,255,.45); }
+    .neon-title { margin:0; font-family:Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif; text-transform:uppercase; font-weight:900; line-height:.79; letter-spacing:.015em; transform:scaleX(.94); transform-origin:left; }
+    .neon-title .white-line { display:block; color:#fff; font-size:clamp(58px,8vw,112px); text-shadow:0 0 4px #fff,0 0 12px rgba(255,255,255,.8),0 0 34px rgba(255,255,255,.32); }
+    .neon-title .red-line { display:block; color:#d8324a; font-size:clamp(86px,12vw,168px); -webkit-text-stroke:2px #ff5269; text-shadow:0 0 5px #e62945,0 0 16px rgba(230,41,69,.9),0 0 42px rgba(201,30,56,.5); }
+    .hero-sub { max-width:570px; color:#d2dddd; font-size:clamp(15px,1.65vw,19px); line-height:1.65; margin:27px 0 0; }
+    .hero-sub strong { color:#fff; }
+    .arch-door { position:absolute; right:7%; bottom:-18px; width:31%; height:91%; z-index:2; border:3px solid #f4f0e9; border-bottom:0; border-radius:48% 48% 3px 3px / 25% 25% 3px 3px; box-shadow:0 0 8px #fff,0 0 26px rgba(255,255,255,.55),0 0 60px rgba(200,27,50,.35),inset 0 0 28px rgba(202,43,64,.28); background:linear-gradient(90deg,#3b1018,#140d11 45%,#46131e); }
+    .arch-door::before { content:""; position:absolute; inset:13px; border:2px solid #d53249; border-radius:48% 48% 2px 2px / 24% 24% 2px 2px; box-shadow:0 0 9px #d53249,0 0 24px rgba(213,50,73,.65); }
+    .arch-door::after { content:""; position:absolute; left:50%; top:24%; width:2px; height:76%; background:rgba(255,255,255,.18); box-shadow:-55px 0 rgba(255,255,255,.07),55px 0 rgba(255,255,255,.07); }
+    .door-seal { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:90px; height:90px; border:3px double #fff; border-radius:50%; display:grid; place-items:center; color:#fff; font:34px Georgia,serif; box-shadow:0 0 16px rgba(255,255,255,.7),0 0 32px rgba(216,40,64,.65); z-index:1; }
+    .hero-flag { position:absolute; z-index:3; right:-2%; top:3%; width:30%; height:32%; overflow:hidden; pointer-events:none; filter:drop-shadow(0 12px 18px rgba(0,0,0,.5)); }
+    .hero-flag img { height:100%; width:135%; max-width:none; object-fit:cover; object-position:left center; }
+    .choose-label { margin:25px 0 14px; color:#d8e0df; font-size:11px; letter-spacing:.22em; text-transform:uppercase; font-weight:800; text-align:center; }
+    .room-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+    .room-card { position:relative; min-height:225px; border:1px solid rgba(255,255,255,.12); border-radius:22px; padding:26px; text-align:left; color:var(--ink); overflow:hidden; cursor:pointer; box-shadow:var(--shadow); transition:transform .3s, border-color .3s; }
+    .room-card:hover { transform:translateY(-7px); border-color:rgba(240,195,106,.55); }
+    .room-card.physics { background:linear-gradient(135deg,rgba(32,48,54,.97),rgba(8,25,31,.96)); }
+    .room-card.chemistry { background:linear-gradient(135deg,rgba(94,25,40,.97),rgba(35,14,23,.96)); }
+    .card-num { display:block; color:var(--gold); font-family:Georgia,serif; font-size:15px; margin-bottom:38px; }
+    .card-symbol { position:absolute; right:18px; top:8px; color:rgba(255,255,255,.08); font-family:Georgia,serif; font-size:160px; line-height:1; }
+    .room-card h2 { margin:0 0 8px; font-family:Georgia,serif; font-size:clamp(28px,4vw,42px); font-weight:500; }
+    .room-card p { display:none; }
+    .card-meta { display:flex; justify-content:space-between; gap:10px; align-items:end; margin-top:24px; color:var(--gold); font-size:12px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .card-arrow { width:42px; height:42px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.2); border-radius:50%; font-size:20px; }
+    .home-footer { display:none; }
+
+    /* Room */
+    #game { flex-direction:column; height:100vh; overflow:hidden; background:#08191e; }
+    .game-header { height:68px; flex:0 0 68px; display:grid; grid-template-columns:1fr auto 1fr; align-items:center; padding:0 clamp(14px,3vw,38px); border-bottom:1px solid rgba(255,255,255,.1); background:rgba(5,19,24,.93); z-index:10; }
+    .back-btn { justify-self:start; border:0; background:none; color:#b9c9c8; cursor:pointer; font-size:13px; }
+    .room-title { text-align:center; }
+    .room-title strong { display:block; font-family:Georgia,serif; font-size:19px; font-weight:500; }
+    .room-title span { color:var(--gold); font-size:9px; letter-spacing:.2em; text-transform:uppercase; }
+    .header-tools { justify-self:end; display:flex; gap:8px; align-items:center; }
+    .header-flag { width:42px; height:24px; overflow:hidden; border:1px solid rgba(255,255,255,.35); border-radius:4px; }
+    .header-flag img { height:100%; width:142%; max-width:none; object-fit:cover; object-position:left center; }
+    .game-clock { min-width:76px; padding:5px 10px; border:1px solid rgba(255,255,255,.14); border-radius:9px; background:rgba(255,255,255,.04); text-align:center; }
+    .game-clock small { display:block; color:#6f8587; font-size:8px; letter-spacing:.18em; }
+    .timer { display:block; color:#fff; font-variant-numeric:tabular-nums; font-size:14px; letter-spacing:.08em; }
+    .scene-wrap { flex:1; min-height:0; position:relative; overflow:hidden; background:radial-gradient(ellipse at 50% 65%,#20383e,#071116 70%); }
+    .scene { position:absolute; left:50%; top:50%; width:min(940px,96vw); height:min(700px,calc(100% - 18px)); transform:translate(-50%,-50%); overflow:visible; perspective:1200px; filter:drop-shadow(0 30px 34px rgba(0,0,0,.56)); }
+    .scene.physics,.scene.chemistry { background:none; }
+    .scene::before { content:""; position:absolute; left:12%; right:12%; bottom:-1%; height:22%; border-radius:50%; background:rgba(0,0,0,.52); filter:blur(22px); pointer-events:none; z-index:0; }
+    .scene::after { content:""; position:absolute; left:50%; top:4%; width:2px; height:55%; transform:translateX(-50%); background:linear-gradient(rgba(255,255,255,.08),rgba(255,255,255,.28),rgba(255,255,255,.03)); z-index:2; pointer-events:none; }
+    .room-edge { position:absolute; z-index:1; pointer-events:none; overflow:hidden; }
+    .room-edge::before { content:""; position:absolute; inset:0; opacity:.28; background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px); background-size:38px 38px; }
+    .room-edge.left { left:3%; top:4%; width:47%; height:62%; clip-path:polygon(0 18%,100% 0,100% 90%,0 100%); background:linear-gradient(135deg,#31505a,#1a3842 75%); border-left:8px solid #1a292e; }
+    .room-edge.right { right:3%; top:4%; width:47%; height:62%; clip-path:polygon(0 0,100% 18%,100% 100%,0 90%); background:linear-gradient(225deg,#26434c,#102e37 75%); border-right:8px solid #14262c; }
+    .chemistry .room-edge.left { background:linear-gradient(135deg,#684352,#3b2734 78%); }
+    .chemistry .room-edge.right { background:linear-gradient(225deg,#58323f,#311e2a 78%); }
+    .window { position:absolute; left:10%; top:18%; width:19%; height:27%; padding:0; border:6px solid #17282c; box-shadow:0 0 0 1px rgba(255,255,255,.12), inset 0 0 50px rgba(98,212,207,.18),12px 15px 18px rgba(0,0,0,.3); background:linear-gradient(145deg,#486770,#132e38 68%); cursor:zoom-in; z-index:4; transition:filter .2s,transform .2s; transform:skewY(-9deg); }
+    .window:hover { filter:brightness(1.2); transform:skewY(-9deg) translateY(-4px) scale(1.03); }
+    .window::before,.window::after { content:""; position:absolute; background:#17282c; }
+    .window::before { width:8px; height:100%; left:50%; transform:translateX(-50%); }
+    .window::after { height:8px; width:100%; top:48%; }
+    .moon { position:absolute; width:30px; height:30px; border-radius:50%; background:#f5e1aa; box-shadow:0 0 28px #f5e1aa; top:17%; left:11%; }
+    .flag-stripe { position:absolute; top:16px; right:16px; width:72px; height:36px; background:linear-gradient(#fff 0 33%,#c9414f 33% 66%,#fff 66%); opacity:.7; transform:rotate(2deg); }
+    .floor-lines { position:absolute; left:3%; right:3%; top:51%; bottom:0; height:auto; clip-path:polygon(0 23%,50% 0,100% 23%,50% 100%); background:repeating-linear-gradient(135deg,rgba(255,255,255,.045) 0 2px,transparent 2px 54px),repeating-linear-gradient(45deg,rgba(255,255,255,.055) 0 2px,transparent 2px 54px),linear-gradient(135deg,#263b3e,#14292d); border-bottom:12px solid #0a171b; z-index:1; filter:drop-shadow(0 18px 12px rgba(0,0,0,.44)); }
+    .chemistry .floor-lines { background:repeating-linear-gradient(135deg,rgba(255,255,255,.04) 0 2px,transparent 2px 54px),repeating-linear-gradient(45deg,rgba(255,255,255,.045) 0 2px,transparent 2px 54px),linear-gradient(135deg,#45343a,#211c24); }
+    .desk { position:absolute; left:28%; top:54%; width:44%; height:17%; background:linear-gradient(#8b624d 0 16%,#51372f 17%); border-radius:4px; box-shadow:14px 18px 30px rgba(0,0,0,.42); z-index:3; transform:perspective(500px) rotateX(3deg); }
+    .desk::before,.desk::after { content:""; position:absolute; bottom:-82%; width:6%; height:84%; background:#33231f; }
+    .desk::before { left:8%; } .desk::after { right:8%; }
+    .shelf { position:absolute; left:37%; top:12%; width:25%; height:9px; background:#3e2a25; box-shadow:0 7px 10px rgba(0,0,0,.35); z-index:1; }
+    .shelf::before { content:""; position:absolute; width:42%; height:52px; bottom:9px; left:10%; background:repeating-linear-gradient(90deg,#87533f 0 11px,#b99967 12px 16px,#40565e 17px 25px); }
+    .door { position:absolute; right:9%; top:18%; width:18%; height:46%; border:8px solid #09161a; background:linear-gradient(100deg,#28464c,#10282f); box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),-15px 18px 28px rgba(0,0,0,.35); z-index:4; cursor:pointer; color:var(--ink); transition:transform 1.25s cubic-bezier(.2,.8,.2,1),filter .2s; transform:skewY(9deg); transform-origin:right center; }
+    .door:hover { filter:brightness(1.18); transform:skewY(9deg) translateY(-4px); }
+    .door.open { transform:skewY(9deg) perspective(900px) rotateY(-76deg); }
+    .door-label { position:absolute; left:50%; top:13%; transform:translateX(-50%); border:1px solid rgba(240,195,106,.5); color:var(--gold); padding:8px 10px; font-size:10px; letter-spacing:.17em; white-space:nowrap; }
+    .keypad-mini { position:absolute; left:9%; top:42%; width:36px; height:49px; border:2px solid #859696; background:#0b171a; border-radius:4px; display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:5px; }
+    .keypad-mini i { background:#718185; border-radius:1px; }
+    .handle { position:absolute; left:16%; top:55%; width:40px; height:7px; background:#d0b26e; box-shadow:0 3px 5px #000; }
+    .object { position:absolute; z-index:5; border:0; background:transparent; color:var(--ink); cursor:pointer; padding:0; filter:drop-shadow(0 8px 8px rgba(0,0,0,.38)); transition:transform .2s,filter .2s; }
+    .object:hover { transform:translateY(-4px) scale(1.03); filter:drop-shadow(0 8px 12px rgba(240,195,106,.35)); }
+    .object::after { content:""; position:absolute; inset:-9px; border:1px solid rgba(240,195,106,0); border-radius:10px; transition:border-color .2s; }
+    .object:hover::after { border-color:rgba(240,195,106,.45); }
+    .tag { position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%); background:#07171b; border:1px solid rgba(255,255,255,.14); border-radius:999px; padding:5px 9px; font-size:10px; white-space:nowrap; opacity:0; transition:.2s; pointer-events:none; }
+    .object:hover .tag,.object:focus-visible .tag,.clickable-window:hover .tag,.clickable-window:focus-visible .tag { opacity:1; }
+    .phone { left:35%; top:50%; width:45px; height:74px; border:4px solid #10161a; border-radius:9px; background:linear-gradient(150deg,#1e656b,#d69a53); display:grid; place-items:center; }
+    .phone span:not(.tag) { font-size:11px; line-height:1.5; text-shadow:0 1px #000; }
+    .circuit { left:47%; top:52%; width:126px; height:68px; border:5px solid #31464a; border-radius:4px; background:#b0a57b; }
+    .circuit .wire { position:absolute; inset:15px; border:3px solid #a53b42; border-radius:5px; }
+    .circuit .bulb { position:absolute; right:11px; top:18px; width:24px; height:24px; border-radius:50%; background:#586466; box-shadow:none; }
+    .circuit.solved .bulb { background:#ffe28c; box-shadow:0 0 24px #ffdc77; }
+    .pendulum { left:62%; top:17%; width:82px; height:170px; transform:skewY(7deg); }
+    .pendulum .rail { position:absolute; width:82px; height:8px; background:#182327; top:0; }
+    .pendulum .string { position:absolute; left:40px; top:7px; width:2px; height:114px; background:#ddd1b3; transform-origin:top; animation:swing 2s ease-in-out infinite alternate; }
+    .pendulum .bob { position:absolute; width:28px; height:28px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#f0c36a,#6c5122); bottom:-14px; left:-13px; }
+    @keyframes swing { from{transform:rotate(-13deg)} to{transform:rotate(13deg)} }
+    .prism { left:42%; top:31%; width:70px; height:56px; clip-path:polygon(50% 0,100% 100%,0 100%); background:linear-gradient(140deg,rgba(255,255,255,.7),rgba(98,212,207,.15)); border:0; }
+    .prism::before { content:""; position:absolute; right:-55px; top:28px; width:80px; height:24px; background:linear-gradient(#e3424f 0 14%,#f08a45 14% 28%,#f3dd55 28% 42%,#5ec56c 42% 56%,#4ca9d8 56% 70%,#6256c6 70% 84%,#9c57b8 84%); transform:skewY(10deg); opacity:.75; }
+    .poster { left:9%; top:47%; width:96px; height:106px; padding:9px!important; background:#d7ccb1!important; color:#24363a!important; transform:skewY(-9deg) rotate(-2deg); font-family:Georgia,serif; font-size:11px; text-align:center; box-shadow:0 7px 13px rgba(0,0,0,.3); }
+    .poster:hover { transform:skewY(-9deg) rotate(-2deg) translateY(-4px) scale(1.03); }
+    .poster strong { display:block; color:#9e2d3a; font-size:24px; margin:8px 0 4px; }
+    /* chemistry objects */
+    .cup { left:35%; top:52%; width:64px; height:64px; background:linear-gradient(90deg,#e2d3ba,#fff6df); border-radius:5px 5px 22px 22px; }
+    .cup::before { content:""; position:absolute; width:28px; height:32px; border:8px solid #e9ddc7; border-left:0; border-radius:0 50% 50% 0; right:-25px; top:12px; }
+    .cup.moved { transform:translateX(90px) rotate(18deg)!important; }
+    .paper { position:absolute; left:34%; top:60%; width:150px; height:75px; background:#e8dfc9; color:#8b8a80; padding:13px; transform:rotate(-4deg); z-index:4; font-family:Georgia,serif; box-shadow:0 4px 7px rgba(0,0,0,.25); }
+    .paper .hidden-digit { position:absolute; right:28px; top:10px; font-size:48px; color:transparent; transition:color .8s,text-shadow .8s; }
+    .paper.revealed .hidden-digit { color:#9d2d45; text-shadow:0 0 9px rgba(157,45,69,.45); }
+    .spill { position:absolute; left:42%; top:62%; width:95px; height:50px; border-radius:50%; background:rgba(176,54,80,.0); z-index:4; transition:background .6s; pointer-events:none; }
+    .spill.show { background:rgba(176,54,80,.35); }
+    .burner { left:49%; top:49%; width:70px; height:105px; }
+    .burner .stand { position:absolute; bottom:0; left:12px; width:48px; height:13px; background:#1d2529; border-radius:50%; }
+    .burner .tube { position:absolute; left:26px; bottom:8px; width:22px; height:59px; background:linear-gradient(90deg,#263236,#849091,#263236); }
+    .burner .flame { position:absolute; left:22px; bottom:56px; width:31px; height:42px; border-radius:50% 50% 48% 48%; transform:scale(.3); transform-origin:bottom; background:radial-gradient(ellipse at bottom,#fff 0 12%,#65c7ff 13% 48%,#f0a945 50% 100%); opacity:0; transition:.35s; }
+    .burner.lit .flame { transform:scale(1); opacity:1; animation:flicker .3s infinite alternate; }
+    @keyframes flicker { to{ transform:scale(.92,1.08) rotate(2deg); } }
+    .flasks { left:59%; top:50%; width:112px; height:100px; }
+    .flask { position:absolute; bottom:0; width:56px; height:70px; border:4px solid rgba(220,235,229,.75); border-radius:5px 5px 25px 25px; background:linear-gradient(transparent 44%,rgba(163,79,163,.5) 45%); }
+    .flask::before { content:""; position:absolute; top:-38px; left:14px; width:20px; height:40px; border:4px solid rgba(220,235,229,.75); border-bottom:0; }
+    .flask.two { left:62px; transform:scale(.8); background:linear-gradient(transparent 44%,rgba(239,202,91,.55) 45%); }
+    .safety { left:39%; top:17%; width:150px; height:138px; background:#eee2c8!important; color:#26333a!important; padding:13px!important; box-shadow:0 8px 16px rgba(0,0,0,.35); text-align:left; }
+    .safety b { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:#9f3541; }
+    .safety .order { font-family:Georgia,serif; font-size:17px; line-height:1.7; }
+    .cabinet { left:7%; top:19%; width:126px; height:190px; transform:skewY(-9deg); background:rgba(194,222,215,.1)!important; border:7px solid #273b3e!important; display:grid; grid-template-columns:repeat(3,1fr); align-items:end; gap:8px; padding:15px!important; }
+    .cabinet:hover { transform:skewY(-9deg) translateY(-4px) scale(1.03); }
+    .cabinet i { height:60px; border:2px solid rgba(255,255,255,.45); border-radius:4px 4px 10px 10px; background:linear-gradient(transparent 50%,rgba(99,180,177,.35) 51%); }
+    .scene-caption { position:absolute; left:50%; bottom:24px; transform:translateX(-50%); z-index:8; color:#e4eceb; background:rgba(5,17,21,.9); border:1px solid rgba(255,255,255,.16); border-radius:999px; padding:9px 15px; font-size:11px; letter-spacing:.05em; pointer-events:none; transition:opacity .3s; }
+    .inventory { position:absolute; left:22px; bottom:22px; z-index:8; display:flex; align-items:center; gap:8px; }
+    .inventory-label { color:#6f8587; font-size:9px; letter-spacing:.14em; text-transform:uppercase; }
+    .digit-chip { width:35px; height:35px; display:grid; place-items:center; border:1px solid rgba(255,255,255,.15); border-radius:8px; background:rgba(5,17,21,.85); color:#6f8587; font-family:Georgia,serif; }
+    .digit-chip.found { color:var(--gold); border-color:rgba(240,195,106,.5); box-shadow:inset 0 0 18px rgba(240,195,106,.1); }
+    .item-chip { display:none; min-width:48px; height:35px; padding:0 8px; place-items:center; border:1px solid rgba(98,212,207,.5); border-radius:8px; background:rgba(12,49,55,.95); color:var(--cyan); font-size:11px; font-weight:800; cursor:grab; touch-action:none; }
+    .item-chip.collected { display:grid; animation:pop .35s; }
+    .item-chip:active { cursor:grabbing; }
+    .drag-ghost { position:fixed; z-index:120; width:68px; height:68px; display:grid; place-items:center; border:2px solid var(--cyan); border-radius:50%; background:#103b41; color:#fff; font-weight:900; pointer-events:none; box-shadow:0 0 30px rgba(98,212,207,.7); transform:translate(-50%,-50%); }
+    .chemistry.dragging-item .door { outline:4px dashed var(--cyan); outline-offset:7px; filter:brightness(1.25); }
+    .chemistry .door.drop-target { outline:5px solid #fff; box-shadow:0 0 35px rgba(98,212,207,.9); }
+    .door-fire { position:absolute; left:4%; right:4%; bottom:0; height:46%; z-index:5; pointer-events:none; filter:drop-shadow(0 0 10px rgba(255,76,24,.75)); transition:opacity .8s,transform .8s; }
+    .door-fire i { position:absolute; bottom:-5px; width:36%; height:88%; border-radius:48% 52% 30% 55%; background:radial-gradient(ellipse at bottom,#fff7b5 0 12%,#ffb133 28%,#ef3f22 60%,transparent 63%); transform-origin:bottom; animation:doorFlame .45s ease-in-out infinite alternate; }
+    .door-fire i:nth-child(1){left:2%;transform:rotate(-8deg)} .door-fire i:nth-child(2){left:32%;height:110%;animation-delay:-.2s} .door-fire i:nth-child(3){right:1%;height:72%;animation-delay:-.32s;transform:rotate(9deg)}
+    @keyframes doorFlame { to { transform:scale(.86,1.1) rotate(4deg); filter:hue-rotate(-8deg); } }
+    .scene.fire-out .door-fire { opacity:0; transform:scaleY(.05); }
+
+    /* Dialogs */
+    .overlay { position:fixed; inset:0; z-index:50; background:rgba(0,8,11,.78); backdrop-filter:blur(9px); display:none; place-items:center; padding:20px; }
+    .overlay.open { display:grid; animation:fade .2s; }
+    @keyframes fade { from{opacity:0} }
+    .modal { width:min(620px,100%); max-height:90vh; overflow:auto; background:linear-gradient(145deg,#112c33,#091e24); border:1px solid rgba(255,255,255,.15); box-shadow:var(--shadow); border-radius:20px; padding:clamp(22px,4vw,38px); position:relative; }
+    .modal.inspection { width:min(880px,100%); min-height:min(620px,82vh); display:flex; align-items:center; background:
+      linear-gradient(145deg,rgba(17,44,51,.97),rgba(6,20,25,.98)),
+      repeating-linear-gradient(90deg,transparent 0 70px,rgba(255,255,255,.025) 71px); }
+    .modal.inspection.chem { background:linear-gradient(145deg,rgba(68,42,54,.98),rgba(30,15,23,.98)); }
+    .modal.inspection #modalContent { width:100%; }
+    .inspection-note { display:inline-flex; align-items:center; gap:8px; color:#8ea5a6; font-size:10px; letter-spacing:.14em; text-transform:uppercase; margin-bottom:6px; }
+    .inspection-note::before { content:"↗"; color:var(--gold); font-size:15px; }
+    .closeup-window { position:relative; height:330px; overflow:hidden; border:8px solid #18292d; border-radius:8px; background:linear-gradient(#071927,#183a4c 65%,#1d3037 66%); box-shadow:inset 0 0 45px rgba(0,0,0,.6); }
+    .closeup-window .city { position:absolute; left:0; right:0; bottom:0; height:43%; background:linear-gradient(transparent 25%,#0a151a 26%); }
+    .closeup-window .city::before { content:""; position:absolute; left:8%; right:8%; bottom:10px; height:95px; background:repeating-linear-gradient(90deg,#152a31 0 28px,#233b42 29px 49px,#10242b 50px 72px); clip-path:polygon(0 65%,8% 35%,14% 58%,21% 25%,28% 60%,36% 42%,44% 70%,52% 16%,60% 52%,68% 30%,75% 62%,84% 20%,91% 45%,100% 60%,100% 100%,0 100%); }
+    .closeup-window .moon-big { position:absolute; right:12%; top:13%; width:70px; height:70px; border-radius:50%; background:#f6e6bd; box-shadow:0 0 45px #f6e6bd; }
+    .closeup-window .window-clue { position:absolute; left:7%; top:10%; color:#fff; font:clamp(24px,5vw,44px) Georgia,serif; text-shadow:0 0 18px rgba(255,255,255,.55); }
+    .giant-ink { font:clamp(100px,20vw,190px) Georgia,serif; color:#b52e45; text-align:center; text-shadow:0 0 28px rgba(181,46,69,.65); animation:inkAppear 2s ease both; }
+    @keyframes inkAppear { from{opacity:0;filter:blur(18px);transform:scale(.65)} to{opacity:1;filter:blur(0);transform:scale(1)} }
+    .heat-station { display:grid; grid-template-columns:130px 1fr; gap:24px; align-items:center; margin:22px 0; padding:24px; border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(0,0,0,.2); }
+    .thermometer { height:230px; width:54px; margin:auto; position:relative; border:5px solid #aebcba; border-radius:30px; background:#18272b; overflow:hidden; }
+    .thermometer::after { content:""; position:absolute; left:50%; bottom:8px; width:34px; height:34px; transform:translateX(-50%); border-radius:50%; background:#d83c4d; z-index:2; }
+    .mercury { position:absolute; left:50%; bottom:24px; width:12px; height:10%; transform:translateX(-50%); background:#d83c4d; border-radius:8px; transition:height .45s; }
+    .temp-readout { font:42px Georgia,serif; color:var(--gold); }
+    .pendulum-stage { height:220px; position:relative; margin:18px 0; border-bottom:4px solid #34494d; background:radial-gradient(circle at 50% 0,rgba(255,255,255,.06),transparent 58%); overflow:hidden; }
+    .pendulum-stage .p-string { position:absolute; left:50%; top:0; width:3px; height:155px; background:#ded1b1; transform-origin:top; }
+    .pendulum-stage.running .p-string { animation:countSwing .4s ease-in-out 10 alternate; }
+    .pendulum-stage .p-string::after { content:""; position:absolute; left:-19px; bottom:-20px; width:42px; height:42px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#f4cf72,#725626); }
+    @keyframes countSwing { from{transform:rotate(-24deg)} to{transform:rotate(24deg)} }
+    .fire-closeup { height:260px; position:relative; overflow:hidden; border-radius:14px; background:linear-gradient(#1b2d31,#0d1619); margin:18px 0; }
+    .fire-closeup::before { content:"EXIT"; position:absolute; inset:18px 22%; border:5px solid #192326; display:grid; place-items:start center; padding-top:25px; color:rgba(255,255,255,.3); font-weight:900; letter-spacing:.2em; background:#23373a; }
+    .fire-closeup .close-flames { position:absolute; left:22%; right:22%; bottom:-25px; height:190px; background:radial-gradient(ellipse at bottom,#fff5b0 0 8%,#ffae32 28%,#e63c21 55%,transparent 58%); filter:drop-shadow(0 0 24px #e84a25); animation:flicker .35s infinite alternate; }
+    .fire-closeup.out .close-flames { opacity:0; transition:opacity .8s; }
+    .modal.chem { background:linear-gradient(145deg,#442a36,#241a24); }
+    .modal-kicker { color:var(--gold); text-transform:uppercase; font-size:10px; letter-spacing:.2em; font-weight:800; }
+    .modal h3 { font-family:Georgia,serif; font-size:clamp(28px,5vw,44px); font-weight:500; margin:9px 0 14px; }
+    .modal p { color:#b7c7c6; line-height:1.65; }
+    .close { position:absolute; right:16px; top:16px; border:0; background:rgba(255,255,255,.07); color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer; }
+    .puzzle-box { margin:20px 0; padding:19px; border:1px solid rgba(255,255,255,.12); border-radius:13px; background:rgba(0,0,0,.16); }
+    .equation { text-align:center; font-family:Georgia,serif; font-size:30px; color:var(--gold); margin:16px 0; }
+    .choices { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-top:18px; }
+    .choice { border:1px solid rgba(255,255,255,.15); background:rgba(255,255,255,.06); color:#fff; border-radius:10px; padding:13px; cursor:pointer; }
+    .choice:hover { border-color:var(--gold); }
+    .choice.good { background:rgba(167,212,111,.18); border-color:var(--lime); }
+    .feedback { min-height:23px; margin-top:12px; color:var(--gold)!important; font-size:13px; }
+    .reveal-digit { display:none; text-align:center; margin:20px 0 4px; }
+    .reveal-digit.show { display:block; animation:pop .45s; }
+    @keyframes pop { 0%{transform:scale(.7);opacity:0} 70%{transform:scale(1.12)} }
+    .reveal-digit span { display:inline-grid; place-items:center; width:76px; height:76px; border:1px solid var(--gold); border-radius:50%; color:var(--gold); font:48px Georgia,serif; box-shadow:0 0 35px rgba(240,195,106,.17); }
+    .range-row { display:grid; grid-template-columns:80px 1fr 70px; align-items:center; gap:12px; margin-top:18px; }
+    input[type=range] { accent-color:var(--gold); width:100%; }
+    .spectrum { height:36px; margin:18px 0; border-radius:8px; background:linear-gradient(90deg,#d73242,#f48742,#f0d84c,#58b95e,#459fd1,#5a55b8,#9b52a9); box-shadow:0 0 24px rgba(98,212,207,.16); }
+    .phone-wallpaper { width:210px; height:360px; margin:18px auto; border:8px solid #10171a; border-radius:24px; padding:34px 18px; display:flex; flex-direction:column; justify-content:space-between; align-items:center; background:linear-gradient(145deg,#1a6670,#cd754d); text-align:center; }
+    .phone-wallpaper .time { font:36px Georgia,serif; }
+    .order-icons { display:flex; align-items:center; gap:9px; font-size:25px; }
+    .order-icons small { font-size:13px; opacity:.65; }
+    .primary { width:100%; border:0; border-radius:11px; background:var(--gold); color:#172024; padding:14px; font-weight:900; cursor:pointer; margin-top:12px; }
+    .keypad-modal { width:min(360px,100%); max-height:calc(100vh - 20px); overflow:hidden; background:#10191c; border:6px solid #26373b; padding:18px 22px; }
+    .keypad-modal h3 { margin:6px 0 10px; font-size:32px; }
+    .pin-display { display:flex; gap:10px; justify-content:center; margin:10px 0 15px; }
+    .pin-dot { width:50px; height:50px; display:grid; place-items:center; border:1px solid #45565a; background:#071114; color:var(--gold); font:27px ui-monospace,monospace; border-radius:6px; }
+    .number-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; }
+    .number-grid button { height:46px; border:1px solid #3a4c50; border-radius:8px; background:#1c292d; color:#fff; font-size:21px; cursor:pointer; }
+    .number-grid button:hover { background:#2c4045; }
+    .number-grid .clear { color:#9fb1b2; font-size:12px; }
+    .keypad-msg { min-height:22px; text-align:center; color:#99aaab; font-size:12px; margin:12px 0 0; }
+    .keypad-modal.error { border-color:var(--red); animation:shake .38s; box-shadow:0 0 35px rgba(201,65,79,.3); }
+    .keypad-modal.error .pin-dot { border-color:var(--red); color:#ff7985; }
+    @keyframes shake { 25%{transform:translateX(-10px)} 50%{transform:translateX(9px)} 75%{transform:translateX(-5px)} }
+    .success { text-align:center; overflow:hidden; }
+    .success-mark { width:104px; height:104px; display:grid; place-items:center; margin:5px auto 20px; border:1px solid var(--gold); border-radius:50%; font-size:46px; color:var(--gold); box-shadow:0 0 45px rgba(240,195,106,.18); }
+    .success h3 { margin-bottom:7px; }
+    .success .time-result { color:var(--gold); letter-spacing:.13em; text-transform:uppercase; font-size:12px; }
+    .confetti { position:fixed; top:-20px; width:9px; height:18px; z-index:60; animation:fall 3s linear forwards; }
+    @keyframes fall { to{transform:translateY(110vh) rotate(680deg)} }
+    .toast { position:fixed; left:50%; bottom:28px; transform:translate(-50%,20px); z-index:80; background:#e8dfca; color:#18252a; border-radius:999px; padding:11px 18px; font-size:13px; opacity:0; pointer-events:none; transition:.25s; box-shadow:0 8px 30px rgba(0,0,0,.35); }
+    .toast.show { opacity:1; transform:translate(-50%,0); }
+
+    /* Bahrain National Day finale */
+    #successOverlay { padding:0; background:#02070d; overflow:hidden; }
+    .celebration { width:100%; height:100vh; position:relative; overflow:hidden; background:radial-gradient(circle at 50% 25%,#162d42,#050b13 58%,#020407); text-align:center; }
+    .celebration::before { content:""; position:absolute; inset:0; opacity:.55; background-image:radial-gradient(#fff 1px,transparent 1px); background-size:53px 53px; }
+    .drone-message { position:absolute; z-index:8; top:8%; left:50%; transform:translateX(-50%); width:90%; color:#fff; font-family:ui-monospace,monospace; font-weight:900; font-size:clamp(25px,5vw,62px); line-height:1.05; letter-spacing:.12em; text-transform:uppercase; text-shadow:0 0 8px #fff,0 0 24px rgba(255,255,255,.8); }
+    .drone-message span { display:block; color:#e2384f; margin-top:6px; text-shadow:0 0 8px #ef4560,0 0 26px rgba(226,56,79,.85); }
+    .celebration-flag { position:absolute; z-index:7; left:2%; top:20%; width:28%; height:28%; overflow:hidden; filter:drop-shadow(0 12px 25px rgba(0,0,0,.55)); }
+    .celebration-flag img { height:100%; width:135%; max-width:none; object-fit:cover; object-position:left center; }
+    .landmark-skyline { position:absolute; z-index:5; left:0; right:0; bottom:0; height:45%; display:flex; align-items:flex-end; justify-content:center; gap:clamp(14px,5vw,70px); padding:0 7% 64px; background:linear-gradient(transparent,#0a1118 80%); }
+    .landmark { position:relative; color:#d6b77a; filter:drop-shadow(0 0 10px rgba(218,184,118,.35)); }
+    .landmark-label { position:absolute; left:50%; bottom:-34px; transform:translateX(-50%); white-space:nowrap; color:#a7b6ba; font-size:9px; letter-spacing:.13em; text-transform:uppercase; }
+    .wtc { width:190px; height:270px; }
+    .wtc .tower { position:absolute; bottom:0; width:64px; height:255px; background:linear-gradient(90deg,#7e673c,#d9c18d 45%,#8a7043); }
+    .wtc .tower.a { left:13px; clip-path:polygon(0 12%,100% 0,76% 100%,18% 100%); }
+    .wtc .tower.b { right:13px; clip-path:polygon(0 0,100% 12%,82% 100%,24% 100%); }
+    .wtc .bridge { position:absolute; left:56px; width:78px; height:5px; background:#e6d2a2; box-shadow:0 0 8px #fff; }
+    .wtc .bridge.one{top:70px}.wtc .bridge.two{top:126px}.wtc .bridge.three{top:182px}
+    .wtc .bridge::after { content:""; position:absolute; left:50%; top:-11px; width:26px; height:26px; transform:translateX(-50%); border:2px solid #e9d8ad; border-radius:50%; }
+    .bab { width:180px; height:170px; background:linear-gradient(#d1b77e,#846c3d); clip-path:polygon(8% 0,92% 0,100% 100%,0 100%); }
+    .bab::before { content:""; position:absolute; left:50%; bottom:0; width:62px; height:98px; transform:translateX(-50%); background:#080f15; border-radius:45px 45px 0 0; box-shadow:-58px 28px 0 -18px #080f15,58px 28px 0 -18px #080f15; }
+    .bab::after { content:"BAB AL BAHRAIN"; position:absolute; left:0; right:0; top:32px; color:#44371f; font-size:10px; font-weight:900; letter-spacing:.08em; }
+    .fort { width:230px; height:145px; background:linear-gradient(#c7aa72,#745e36); clip-path:polygon(0 24%,8% 24%,8% 6%,24% 6%,24% 20%,76% 20%,76% 6%,92% 6%,92% 24%,100% 24%,100% 100%,0 100%); }
+    .fort::before { content:""; position:absolute; left:50%; bottom:0; width:54px; height:64px; transform:translateX(-50%); background:#080f15; border-radius:28px 28px 0 0; }
+    .success-panel { position:absolute; z-index:12; left:50%; bottom:16px; transform:translateX(-50%); width:min(540px,88%); display:flex; align-items:center; justify-content:center; gap:16px; padding:10px 15px; border:1px solid rgba(255,255,255,.16); border-radius:15px; background:rgba(4,12,18,.84); backdrop-filter:blur(9px); }
+    .success-panel .success-mark { width:44px; height:44px; flex:0 0 44px; margin:0; font-size:22px; }
+    .success-text { text-align:left; }
+    .success-text strong { display:block; font:20px Georgia,serif; }
+    .success-text span { color:var(--gold); font-size:10px; letter-spacing:.12em; text-transform:uppercase; }
+    .success-panel .primary { width:auto; margin:0 0 0 auto; padding:10px 14px; white-space:nowrap; }
+    .sky-firework { position:absolute; z-index:6; width:8px; height:8px; border-radius:50%; animation:burst 2.1s ease-out infinite; }
+    @keyframes burst { 0%{transform:scale(.1);opacity:0} 22%{opacity:1} 100%{transform:scale(12);opacity:0;box-shadow:0 -20px #fff,14px -14px #d82942,20px 0 #fff,14px 14px #d82942,0 20px #fff,-14px 14px #d82942,-20px 0 #fff,-14px -14px #d82942} }
+
+    @media (max-width: 760px) {
+      #home { padding-top:22px; }
+      .hero { padding-top:26px; }
+      .hero-stage { min-height:530px; grid-template-columns:1fr; align-items:start; padding:36px 25px; }
+      .neon-title .white-line { font-size:clamp(52px,16vw,80px); }
+      .neon-title .red-line { font-size:clamp(78px,24vw,118px); }
+      .hero-sub { max-width:59%; }
+      .arch-door { width:46%; height:54%; right:3%; }
+      .hero-flag { width:43%; height:23%; right:-4%; top:44%; }
+      .room-grid { grid-template-columns:1fr; }
+      .room-card { min-height:225px; }
+      .card-num { margin-bottom:25px; }
+      .ncst-logo-wrap { width:210px; }
+      .sound-btn { padding:8px 11px; font-size:12px; }
+      .game-header { grid-template-columns:74px 1fr 146px; padding-left:10px; padding-right:10px; }
+      .header-flag { display:none; }
+      .game-clock { display:block; min-width:56px; padding:4px 7px; }
+      .header-tools { gap:5px; }
+      .header-tools .utility-btn { padding:8px 10px; }
+      .scene { width:98vw; height:calc(100% - 8px); left:50%; top:50%; bottom:auto; transform:translate(-50%,-50%); }
+      .scene-caption { display:none; }
+      .inventory { bottom:10px; left:10px; }
+      .modal { padding:25px 20px; }
+      .keypad-modal { padding:14px 18px; }
+      .number-grid button { height:42px; }
+      .modal.inspection { min-height:86vh; }
+      .closeup-window { height:270px; }
+      .celebration-flag { width:42%; height:20%; top:23%; }
+      .landmark-skyline { gap:12px; padding:0 3% 78px; transform:scale(.78); transform-origin:bottom center; width:126%; left:-13%; }
+      .success-panel { flex-wrap:wrap; }
+      .success-panel .primary { width:100%; margin:0; }
+    }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+  </style>
+</head>
+<body>
+<main class="app">
+  <section id="home" class="screen active" aria-label="Game selection">
+    <div class="topbar">
+      <div class="brand"><div class="ncst-logo-wrap"><img src="assets/ncst-logo.png" alt="Nasser Centre for Science and Technology"></div></div>
+      <button class="sound-btn" id="soundToggle" aria-pressed="true">Sound: on</button>
+    </div>
+    <div class="hero">
+      <div class="hero-stage">
+        <div class="hero-copy">
+          <p class="occasion">Bahrain National Day · Science Station</p>
+          <h1 class="neon-title"><span class="white-line">The Crimson</span><span class="red-line">Key</span></h1>
+          <p class="hero-sub"><strong>Solve the science. Unlock the rooms.</strong><br>Escape together in celebration of Bahrain National Day.</p>
+        </div>
+        <div class="arch-door" aria-hidden="true"><span class="door-seal">⚛</span></div>
+        <div class="hero-flag" aria-hidden="true"><img src="assets/bahrain-flag.webp" alt=""></div>
+      </div>
+      <p class="choose-label">Choose your laboratory</p>
+      <div class="room-grid">
+        <button class="room-card physics" data-room="physics">
+          <span class="card-num">CASE 01</span><span class="card-symbol">λ</span>
+          <h2>The Power Vault</h2>
+          <div class="card-meta"><span>Physics · 3 puzzles</span><span class="card-arrow">↗</span></div>
+        </button>
+        <button class="room-card chemistry" data-room="chemistry">
+          <span class="card-num">CASE 02</span><span class="card-symbol">⚗</span>
+          <h2>The Reactive Lab</h2>
+          <div class="card-meta"><span>Chemistry · 3 puzzles</span><span class="card-arrow">↗</span></div>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section id="game" class="screen" aria-label="Escape room">
+    <header class="game-header">
+      <button class="back-btn" id="backBtn">← Choose room</button>
+      <div class="room-title"><span id="caseLabel">CASE 01 · PHYSICS</span><strong id="roomName">The Power Vault</strong></div>
+      <div class="header-tools"><div class="header-flag" aria-hidden="true"><img src="assets/bahrain-flag.webp" alt=""></div><div class="game-clock"><small>TIME</small><span class="timer" id="timer">00:00</span></div><button class="utility-btn" id="hintBtn">Hint</button></div>
+    </header>
+    <div class="scene-wrap">
+      <div id="physicsScene" class="scene physics" hidden>
+        <div class="room-edge left"></div><div class="room-edge right"></div>
+        <button class="window clickable-window" data-puzzle="window" aria-label="Move closer to the window"><div class="moon"></div><div class="flag-stripe"></div><span class="tag">Window view</span></button><div class="floor-lines"></div><div class="shelf"></div><div class="desk"></div>
+        <button class="object phone" data-puzzle="phone" aria-label="Inspect phone"><span>⚡ → ◉<br>→ △</span><span class="tag">Phone</span></button>
+        <button class="object circuit" data-puzzle="circuit" aria-label="Inspect circuit"><span class="wire"></span><span class="bulb"></span><span class="tag">Circuit board</span></button>
+        <button class="object pendulum" data-puzzle="pendulum" aria-label="Inspect pendulum"><span class="rail"></span><span class="string"><span class="bob"></span></span><span class="tag">Pendulum</span></button>
+        <button class="object prism" data-puzzle="prism" aria-label="Inspect prism"><span class="tag">Glass prism</span></button>
+        <button class="object poster" data-puzzle="poster" aria-label="Inspect poster">PERIOD<strong>T ≈ 2π√L/g</strong>Round wisely.</button>
+        <button class="door" data-puzzle="door" aria-label="Open exit door"><span class="door-label">EXIT · LOCKED</span><span class="keypad-mini"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="handle"></span></button>
+        <div class="inventory"><span class="inventory-label">Digits</span><span class="digit-chip">?</span><span class="digit-chip">?</span><span class="digit-chip">?</span></div>
+        <div class="scene-caption">Move through the room. Every object has something to say.</div>
+      </div>
+
+      <div id="chemistryScene" class="scene chemistry" hidden>
+        <div class="room-edge left"></div><div class="room-edge right"></div>
+        <button class="window clickable-window" data-puzzle="window" aria-label="Move closer to the window"><div class="moon"></div><div class="flag-stripe"></div><span class="tag">Window view</span></button><div class="floor-lines"></div><div class="desk"></div>
+        <button class="object cabinet" data-puzzle="cabinet" aria-label="Inspect reagent cabinet"><i></i><i></i><i></i><span class="tag">Reagent cabinet</span></button>
+        <div class="paper" id="chemPaper">CONFIDENTIAL<br>Sample record <span class="hidden-digit">3</span></div><div class="spill" id="spill"></div>
+        <button class="object cup" data-puzzle="cup" aria-label="Move cup"><span class="tag">Move the cup</span></button>
+        <button class="object burner" data-puzzle="burner" aria-label="Inspect burner"><span class="flame"></span><span class="tube"></span><span class="stand"></span><span class="tag">Bunsen burner</span></button>
+        <button class="object flasks" data-puzzle="indicator" aria-label="Inspect flasks"><span class="flask"></span><span class="flask two"></span><span class="tag">Unknown sample</span></button>
+        <button class="object safety" data-puzzle="safety" aria-label="Inspect safety poster"><b>Lab protocol / code order</b><div class="order">① Drop<br>② Heat<br>③ Colour</div></button>
+        <button class="door" data-puzzle="door" aria-label="Inspect the burning exit door"><span class="door-label">EXIT · FIRE</span><span class="keypad-mini"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="handle"></span><span class="door-fire"><i></i><i></i><i></i></span></button>
+        <div class="inventory"><span class="inventory-label">Found</span><button class="item-chip" id="co2Chip" draggable="true" aria-label="Drag CO₂ canister onto the fire">CO₂</button><span class="digit-chip">?</span><span class="digit-chip">?</span><span class="digit-chip">?</span></div>
+        <div class="scene-caption">Inspect the 3D room. When found, drag the CO₂ canister from inventory onto the fire.</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal" id="modal"><button class="close" id="modalClose" aria-label="Close">×</button><div id="modalContent"></div></div>
+</div>
+<div class="overlay" id="keypadOverlay" role="dialog" aria-modal="true" aria-label="Door keypad">
+  <div class="modal keypad-modal" id="keypadModal"><button class="close" id="keypadClose" aria-label="Close">×</button>
+    <div class="modal-kicker">Door control</div><h3>Enter code</h3>
+    <div class="pin-display"><span class="pin-dot">—</span><span class="pin-dot">—</span><span class="pin-dot">—</span></div>
+    <div class="number-grid" id="numberGrid"></div><p class="keypad-msg" id="keypadMsg">Three digits. Order matters.</p>
+  </div>
+</div>
+<div class="overlay" id="successOverlay" role="dialog" aria-modal="true" aria-label="Bahrain National Day celebration">
+  <div class="celebration" id="celebration">
+    <div class="drone-message">Happy Bahrain<span>National Day</span></div>
+    <div class="celebration-flag"><img src="assets/bahrain-flag.webp" alt="Bahrain flag"></div>
+    <div class="landmark-skyline" aria-label="Bahrain landmarks">
+      <div class="landmark fort"><span class="landmark-label">Qal'at al-Bahrain</span></div>
+      <div class="landmark bab"><span class="landmark-label">Bab Al Bahrain</span></div>
+      <div class="landmark wtc"><i class="tower a"></i><i class="tower b"></i><i class="bridge one"></i><i class="bridge two"></i><i class="bridge three"></i><span class="landmark-label">Bahrain World Trade Center</span></div>
+    </div>
+    <div class="success-panel"><div class="success-mark">✓</div><div class="success-text"><strong id="successCopy">You escaped!</strong><span id="timeResult"></span></div><button class="primary" id="playAnother">Play the other room</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const state = { room:null, found:{physics:new Set(),chemistry:new Set()}, elapsed:0, timer:null, sound:true, pin:'', hints:{physics:0,chemistry:0}, hasCO2:false, fireOut:false };
+  const answers = { physics:'427', chemistry:'389' };
+  const puzzleDigits = { physics:{circuit:'4',pendulum:'2',prism:'7'}, chemistry:{cup:'3',burner:'8',indicator:'9'} };
+  const $ = (s,root=document) => root.querySelector(s), $$ = (s,root=document) => [...root.querySelectorAll(s)];
+  const home=$('#home'), game=$('#game'), modalOverlay=$('#modalOverlay'), modal=$('#modal'), content=$('#modalContent');
+  const keypadOverlay=$('#keypadOverlay'), keypadModal=$('#keypadModal'), successOverlay=$('#successOverlay'), toast=$('#toast');
+
+  function tone(freq=440,d=.08,type='sine') { if(!state.sound) return; try { const C=window.AudioContext||window.webkitAudioContext, c=tone.ctx||(tone.ctx=new C()), o=c.createOscillator(), g=c.createGain(); o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(.045,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+d); } catch(e){} }
+  function showToast(msg){ toast.textContent=msg;toast.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>toast.classList.remove('show'),2200); }
+  function formatTime(s){ return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
+  function startTimer(){ clearInterval(state.timer);state.elapsed=0;$('#timer').textContent='00:00';state.timer=setInterval(()=>{$('#timer').textContent=formatTime(++state.elapsed)},1000); }
+
+  function enterRoom(room){
+    state.room=room;state.pin='';home.classList.remove('active');game.classList.add('active');
+    $('#physicsScene').hidden=room!=='physics';$('#chemistryScene').hidden=room!=='chemistry';
+    $('#caseLabel').textContent=room==='physics'?'CASE 01 · PHYSICS':'CASE 02 · CHEMISTRY';
+    $('#roomName').textContent=room==='physics'?'The Power Vault':'The Reactive Lab';
+    updateDigits();startTimer();tone(280,.16,'triangle');
+  }
+  function goHome(){ clearInterval(state.timer);game.classList.remove('active');home.classList.add('active');closeAll(); }
+  function closeAll(){ modalOverlay.classList.remove('open');keypadOverlay.classList.remove('open');successOverlay.classList.remove('open'); }
+  function openModal(html){ content.innerHTML=`<div class="inspection-note">Close-up view</div>${html}`;modal.classList.add('inspection');modal.classList.toggle('chem',state.room==='chemistry');modalOverlay.classList.add('open');setTimeout(()=>$('#modalClose').focus(),20); }
+  function closeModal(){modalOverlay.classList.remove('open');}
+  function suppressFire(){
+    if(!state.hasCO2||state.fireOut)return;
+    state.fireOut=true;
+    const chemScene=$('#chemistryScene'),door=$('.door',chemScene),chip=$('#co2Chip');
+    chemScene.classList.remove('dragging-item');chemScene.classList.add('fire-out');door.classList.remove('drop-target');
+    $('.door-label',door).textContent='EXIT · READY';door.setAttribute('aria-label','Open exit keypad');
+    chip.textContent='CO₂ ✓';chip.draggable=false;chip.disabled=true;chip.setAttribute('aria-label','CO₂ canister used');
+    showToast('Fire suppressed — the exit keypad is now accessible.');tone(520,.15);setTimeout(()=>tone(740,.18),120);
+  }
+  function solve(key){
+    if(state.found[state.room].has(key)) return;
+    state.found[state.room].add(key);updateDigits();tone(660,.12);setTimeout(()=>tone(880,.14),90);
+  }
+  function updateDigits(){
+    const scene=$(`#${state.room}Scene`), chips=$$('.digit-chip',scene), order=state.room==='physics'?['circuit','pendulum','prism']:['cup','burner','indicator'];
+    order.forEach((k,i)=>{const found=state.found[state.room].has(k);chips[i].textContent=found?puzzleDigits[state.room][k]:'?';chips[i].classList.toggle('found',found)});
+  }
+  function digitReveal(n,label){return `<div class="reveal-digit show"><p>${label}</p><span>${n}</span></div>`;}
+  function already(key){return state.found[state.room].has(key);}
+
+  const physicsPuzzles={
+    window(){ openModal(`<div class="modal-kicker">Window view</div><h3>Manama after dark</h3><div class="closeup-window"><span class="moon-big"></span><span class="window-clue">POWER → PERIOD → LIGHT</span><span class="city"></span></div><p>The illuminated words across the skyline repeat in a deliberate order. It may be useful at the exit.</p>`); },
+    phone(){ openModal(`<div class="modal-kicker">Personal device</div><h3>Locked phone</h3><p>The wallpaper is the only thing visible. It looks less decorative than it first appears.</p><div class="phone-wallpaper"><div class="time">20:26</div><div><div class="order-icons"><b>⚡</b><small>→</small><b>◉</b><small>→</small><b>△</b></div><p style="color:#fff;margin:12px 0 0;font-size:12px">POWER · PERIOD · LIGHT</p></div><div style="font-size:11px">Swipe to unlock</div></div><p class="feedback">This gives the order: circuit, pendulum, spectrum.</p>`); },
+    poster(){ openModal(`<div class="modal-kicker">Wall note</div><h3>The pendulum law</h3><p>For a simple pendulum near Earth's surface:</p><div class="equation">T = 2π √(L / g)</div><p>Use <b>g ≈ 9.8 m/s²</b>. The note says to round the period to the nearest whole second.</p>`); },
+    circuit(){
+      if(already('circuit')) return openModal(`<div class="modal-kicker">Circuit restored</div><h3>Ohm's law</h3><p>The lamp is glowing. Your calculation is still written beside it.</p>${digitReveal(4,'Circuit digit')}`);
+      openModal(`<div class="modal-kicker">Puzzle 01 · Power</div><h3>Complete the circuit</h3><p>The supply reads <b>12 V</b>. The ammeter reads <b>3 A</b>. Select the missing resistance that will make the lamp glow.</p><div class="puzzle-box" style="text-align:center">12 VOLTS <span style="color:var(--gold);margin:0 18px">●───●</span> 3 AMPS</div><div class="choices"><button class="choice" data-answer="2">2 Ω</button><button class="choice" data-answer="4">4 Ω</button><button class="choice" data-answer="9">9 Ω</button></div><button class="utility-btn" id="circuitHint" style="margin-top:14px">Show physics hint</button><p class="feedback" id="feedback">Choose one resistor.</p><div id="hintArea"></div><div id="digitArea"></div>`);
+      $('#circuitHint').onclick=()=>{$('#hintArea').innerHTML='<div class="equation" style="font-size:24px">R = V ÷ I</div>';$('#circuitHint').remove();};
+      $$('.choice',content).forEach(b=>b.onclick=()=>{if(b.dataset.answer==='4'){b.classList.add('good');$('#feedback').textContent='12 ÷ 3 = 4 Ω. The circuit hums to life.';$('#digitArea').innerHTML=digitReveal(4,'Circuit digit');solve('circuit');$('.circuit').classList.add('solved')}else{$('#feedback').textContent='That resistance does not match V ÷ I. Try again.';tone(180,.1)}});
+    },
+    pendulum(){
+      if(already('pendulum')) return openModal(`<div class="modal-kicker">Measurement complete</div><h3>Five swings</h3><p>Five complete swings took 10.0 seconds. One swing therefore takes 2 seconds.</p>${digitReveal(2,'Period digit')}`);
+      openModal(`<div class="modal-kicker">Puzzle 02 · Motion</div><h3>Count five swings</h3><p>Start the optical timer. It will record the total time for five complete swings. Divide the result by five to find the digit.</p><div class="pendulum-stage" id="pendulumStage"><span class="p-string"></span></div><button class="primary" id="measureBtn">Start optical timer</button><p class="feedback" id="feedback">Counter: 0 / 5 · Time: —</p><div id="digitArea"></div>`);
+      $('#measureBtn').onclick=()=>{const btn=$('#measureBtn'),stage=$('#pendulumStage');btn.disabled=true;btn.textContent='Measuring five swings…';stage.classList.add('running');$('#feedback').textContent='Counter running…';setTimeout(()=>{$('#feedback').textContent='Counter: 5 / 5 · Total: 10.0 s · 10 ÷ 5 = 2';$('#digitArea').innerHTML=digitReveal(2,'Period digit');btn.textContent='Measurement complete';solve('pendulum')},4100)};
+    },
+    prism(){
+      if(already('prism')) return openModal(`<div class="modal-kicker">Spectrum observed</div><h3>White light</h3><div class="spectrum"></div>${digitReveal(7,'Spectrum digit')}`);
+      openModal(`<div class="modal-kicker">Puzzle 03 · Light</div><h3>Split the beam</h3><p>The prism separates white light into the visible spectrum. Count the traditional colour bands.</p><div class="spectrum"></div><div class="choices"><button class="choice" data-answer="6">6 bands</button><button class="choice" data-answer="7">7 bands</button><button class="choice" data-answer="8">8 bands</button></div><p class="feedback" id="feedback">Red to violet. How many?</p><div id="digitArea"></div>`);
+      $$('.choice',content).forEach(b=>b.onclick=()=>{if(b.dataset.answer==='7'){b.classList.add('good');$('#feedback').textContent='Red, orange, yellow, green, blue, indigo, violet.';$('#digitArea').innerHTML=digitReveal(7,'Spectrum digit');solve('prism')}else{$('#feedback').textContent='Count each distinct colour band again.';tone(180,.1)}});
+    }
+  };
+
+  const chemistryPuzzles={
+    window(){ openModal(`<div class="modal-kicker">Window view</div><h3>Smoke over the lab</h3><div class="closeup-window"><span class="moon-big"></span><span class="window-clue">KEEP CALM · THINK SAFELY</span><span class="city"></span></div><p>The fire is contained to the digital training room. Search the reagent cabinet for a suitable suppression item.</p>`); },
+    safety(){ openModal(`<div class="modal-kicker">Safety protocol</div><h3>The order matters</h3><p>A handwritten note has turned the safety sequence into a keypad clue.</p><div class="puzzle-box"><div class="equation" style="font-size:23px">① DROP → ② FLAME → ③ COLOUR</div><p style="text-align:center">Read the digits in this order.</p></div>`); },
+    cabinet(){
+      openModal(`<div class="modal-kicker">Reagent cabinet</div><h3>Emergency shelf</h3><div class="puzzle-box"><p><b>Universal indicator</b> · distilled water · sodium chloride</p><p><b>CO₂ training canister</b> — marked for the simulated door fire.</p></div><button class="primary" id="collectCO2" ${state.hasCO2?'disabled':''}>${state.hasCO2?'CO₂ canister collected':'Collect CO₂ canister'}</button><p class="feedback" id="feedback">Digital training item only. For a real fire, evacuate and follow site safety procedures.</p>`);
+      $('#collectCO2').onclick=()=>{state.hasCO2=true;$('#co2Chip').classList.add('collected');$('#collectCO2').textContent='CO₂ canister collected';$('#collectCO2').disabled=true;$('#feedback').textContent='Added to inventory. Drag the CO₂ chip onto the flames.';tone(720,.15);setTimeout(()=>{closeModal();showToast('Drag CO₂ from inventory onto the burning door.')},650)};
+    },
+    cup(){
+      if(!already('cup')){$('.cup').classList.add('moved');$('#chemPaper').classList.add('revealed');$('#spill').classList.add('show');solve('cup');}
+      setTimeout(()=>openModal(`<div class="modal-kicker">Puzzle 01 · Drop</div><h3>The hidden stain</h3><p>The cup slides aside. As the red-cabbage solution spreads, an acid-written mark slowly develops directly on the paper.</p><div class="puzzle-box" style="background:#e8dfc9"><div class="giant-ink">3</div></div><p class="feedback">The first digit has appeared.</p>`),320);
+    },
+    burner(){
+      if(already('burner')) return openModal(`<div class="modal-kicker">Heating complete</div><h3>Temperature plateau</h3><p>The safe training sample stopped warming at 80 °C.</p>${digitReveal(8,'Use the tens digit')}`);
+      openModal(`<div class="modal-kicker">Puzzle 02 · Heat</div><h3>Reach the plateau</h3><p>The sample is on a guarded laboratory hot plate. Tap the heat control and watch the thermometer. Stop when the reading no longer rises; use its <b>tens digit</b>.</p><div class="heat-station"><div class="thermometer"><span class="mercury" id="mercury"></span></div><div><div class="temp-readout" id="tempReadout">20 °C</div><button class="primary" id="heatBtn">Apply one heat pulse</button><p class="feedback" id="feedback">Thermal sensor connected.</p></div></div><div id="digitArea"></div>`);
+      let heatStep=0;$('#heatBtn').onclick=()=>{heatStep++;const readings=[20,40,60,80,80],temp=readings[Math.min(heatStep,4)];$('#tempReadout').textContent=`${temp} °C`;$('#mercury').style.height=`${10+Math.min(heatStep,4)*19}%`;tone(300+heatStep*60,.08);if(heatStep<4){$('#feedback').textContent='The temperature is still rising. Apply another pulse.'}else{$('#feedback').textContent='Plateau reached at 80 °C. The tens digit is 8.';$('#digitArea').innerHTML=digitReveal(8,'Heat digit');$('#heatBtn').disabled=true;solve('burner');$('.burner').classList.add('lit')}};
+    },
+    indicator(){
+      if(already('indicator')) return openModal(`<div class="modal-kicker">Unknown identified</div><h3>Strong alkali</h3><p>Universal indicator turned purple: pH 9 in this simplified station chart.</p>${digitReveal(9,'Colour digit')}`);
+      openModal(`<div class="modal-kicker">Puzzle 03 · Colour</div><h3>Test the unknown</h3><p>Add universal indicator. The sample turns <b>purple</b>. Use the station chart to select its pH digit.</p><div class="spectrum" style="background:linear-gradient(90deg,#d63b3f,#e9943e,#efd34f,#59b65b,#3f8ac5,#7f52a6)"></div><div class="choices"><button class="choice" data-answer="3">pH 3</button><button class="choice" data-answer="7">pH 7</button><button class="choice" data-answer="9">pH 9</button></div><p class="feedback" id="feedback">Purple is on the alkaline end of this chart.</p><div id="digitArea"></div>`);
+      $$('.choice',content).forEach(b=>b.onclick=()=>{if(b.dataset.answer==='9'){b.classList.add('good');$('#feedback').textContent='Correct. The purple sample matches pH 9.';$('#digitArea').innerHTML=digitReveal(9,'Colour digit');solve('indicator')}else{$('#feedback').textContent='Follow the chart toward the purple end.';tone(180,.1)}});
+    },
+    doorFire(){
+      if(state.fireOut){ closeModal();openKeypad();return; }
+      openModal(`<div class="modal-kicker">Exit hazard</div><h3>The doorway is burning</h3><div class="fire-closeup"><span class="close-flames"></span></div><p>This is a simulated training fire. ${state.hasCO2?'Return to the room and <b>drag the glowing CO₂ inventory chip directly onto the flames</b>.':'Search the reagent cabinet for the marked CO₂ training canister.'}</p><button class="primary" id="returnToRoom">Return to 3D room</button><p class="feedback">In a real fire, evacuate and follow the station emergency procedure.</p>`);
+      $('#returnToRoom').onclick=closeModal;
+    }
+  };
+
+  function openKeypad(){ state.pin='';renderPin();$('#keypadMsg').textContent='Three digits. Order matters.';keypadModal.classList.remove('error');keypadOverlay.classList.add('open');tone(330,.08); }
+  function renderPin(){ $$('.pin-dot').forEach((d,i)=>d.textContent=state.pin[i]||'—'); }
+  function pressKey(k){
+    keypadModal.classList.remove('error');
+    if(k==='clear'){state.pin='';renderPin();return;}
+    if(state.pin.length>=3)return;state.pin+=k;renderPin();tone(240+Number(k)*18,.05);
+    if(state.pin.length===3)setTimeout(checkPin,180);
+  }
+  function checkPin(){
+    if(state.pin===answers[state.room]){keypadOverlay.classList.remove('open');clearInterval(state.timer);const door=$(`#${state.room}Scene .door`);door.classList.add('open');$('.door-label',door).textContent='EXIT · OPEN';tone(523,.15);setTimeout(()=>tone(659,.15),130);setTimeout(()=>tone(784,.3),260);setTimeout(showSuccess,900);}
+    else {keypadModal.classList.add('error');$('#keypadMsg').textContent='ACCESS DENIED · PIN RESET';tone(120,.25,'sawtooth');setTimeout(()=>{state.pin='';renderPin();keypadModal.classList.remove('error');$('#keypadMsg').textContent='Look for the order clue in the room.'},800);}
+  }
+  function showSuccess(){
+    $('#successCopy').textContent=state.room==='physics'?'The Power Vault is open!':'The Reactive Lab is open!';
+    $('#timeResult').textContent=`Escape time · ${formatTime(state.elapsed)}`;successOverlay.classList.add('open');
+    $$('.sky-firework',$('#celebration')).forEach(f=>f.remove());for(let i=0;i<6;i++){const f=document.createElement('i');f.className='sky-firework';f.style.left=(18+Math.random()*70)+'%';f.style.top=(18+Math.random()*36)+'%';f.style.background=i%2?'#fff':'#d82942';f.style.animationDelay=(Math.random()*1.8)+'s';$('#celebration').appendChild(f)}
+    const colors=['#ffffff','#c9414f'];for(let i=0;i<52;i++){const c=document.createElement('i');c.className='confetti';c.style.left=Math.random()*100+'vw';c.style.background=colors[i%colors.length];c.style.animationDelay=Math.random()*.8+'s';c.style.transform=`rotate(${Math.random()*180}deg)`;document.body.appendChild(c);setTimeout(()=>c.remove(),4300)}
+  }
+  function giveHint(){
+    const found=state.found[state.room];let msg;
+    if(state.room==='physics'){
+      const steps=['Move closer to the window or phone to find the digit order.','For the circuit, use R = V ÷ I. The puzzle also has its own hint button.','Time five pendulum swings, then divide the total by five.','Count the traditional colours produced by the prism.','You have the digits. Tap the exit door and follow the clue order.'];
+      msg=steps[Math.min(state.hints.physics++,steps.length-1)];
+    } else {
+      const steps=['The exit is burning. Inspect the reagent cabinet for a marked CO₂ training canister.','The safety poster gives the order: drop, heat, colour.','Try moving the cup on the table.','Pulse the hot plate until the temperature stops rising.','Use the indicator on the unknown sample, then extinguish the simulated door fire.','You have the digits. Tap the exit door and use the poster order.'];
+      msg=steps[Math.min(state.hints.chemistry++,steps.length-1)];
+    } showToast(msg);tone(520,.08);
+  }
+
+  $$('.room-card').forEach(b=>b.onclick=()=>enterRoom(b.dataset.room));
+  $('#backBtn').onclick=goHome;$('#modalClose').onclick=closeModal;$('#keypadClose').onclick=()=>keypadOverlay.classList.remove('open');$('#hintBtn').onclick=giveHint;
+  $('#soundToggle').onclick=e=>{state.sound=!state.sound;e.currentTarget.textContent=`Sound: ${state.sound?'on':'off'}`;e.currentTarget.setAttribute('aria-pressed',state.sound);if(state.sound)tone(440,.08)};
+  $$('.scene .object,.scene .door,.scene .clickable-window').forEach(b=>b.onclick=()=>{const key=b.dataset.puzzle;if(key==='door'){if(state.room==='chemistry'&&!state.fireOut)chemistryPuzzles.doorFire();else openKeypad()}else (state.room==='physics'?physicsPuzzles:chemistryPuzzles)[key]()});
+  const co2Chip=$('#co2Chip'),chemScene=$('#chemistryScene'),chemDoor=$('#chemistryScene .door');
+  co2Chip.addEventListener('dragstart',e=>{if(!state.hasCO2||state.fireOut){e.preventDefault();return}e.dataTransfer.setData('text/plain','co2');e.dataTransfer.effectAllowed='move';chemScene.classList.add('dragging-item')});
+  co2Chip.addEventListener('dragend',()=>{chemScene.classList.remove('dragging-item');chemDoor.classList.remove('drop-target')});
+  chemDoor.addEventListener('dragover',e=>{if(!state.hasCO2||state.fireOut)return;e.preventDefault();e.dataTransfer.dropEffect='move';chemDoor.classList.add('drop-target')});
+  chemDoor.addEventListener('dragleave',()=>chemDoor.classList.remove('drop-target'));
+  chemDoor.addEventListener('drop',e=>{e.preventDefault();chemDoor.classList.remove('drop-target');if(e.dataTransfer.getData('text/plain')==='co2')suppressFire()});
+  let dragGhost=null;
+  function finishPointerDrag(e){if(!dragGhost)return;const r=chemDoor.getBoundingClientRect(),hit=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;dragGhost.remove();dragGhost=null;chemScene.classList.remove('dragging-item');chemDoor.classList.remove('drop-target');if(hit)suppressFire();else showToast('Drop the CO₂ canister directly onto the flames.')}
+  co2Chip.addEventListener('pointerdown',e=>{if(!state.hasCO2||state.fireOut)return;e.preventDefault();co2Chip.setPointerCapture(e.pointerId);dragGhost=document.createElement('div');dragGhost.className='drag-ghost';dragGhost.textContent='CO₂';document.body.appendChild(dragGhost);dragGhost.style.left=e.clientX+'px';dragGhost.style.top=e.clientY+'px';chemScene.classList.add('dragging-item')});
+  co2Chip.addEventListener('pointermove',e=>{if(!dragGhost)return;dragGhost.style.left=e.clientX+'px';dragGhost.style.top=e.clientY+'px';const r=chemDoor.getBoundingClientRect(),hit=e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom;chemDoor.classList.toggle('drop-target',hit)});
+  co2Chip.addEventListener('pointerup',finishPointerDrag);co2Chip.addEventListener('pointercancel',finishPointerDrag);
+  const ng=$('#numberGrid');['1','2','3','4','5','6','7','8','9','clear','0'].forEach(k=>{const b=document.createElement('button');b.textContent=k==='clear'?'CLEAR':k;b.className=k==='clear'?'clear':'';b.onclick=()=>pressKey(k);ng.appendChild(b)});
+  $('#playAnother').onclick=()=>{successOverlay.classList.remove('open');const next=state.room==='physics'?'chemistry':'physics';enterRoom(next)};
+  [modalOverlay,keypadOverlay].forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+  document.addEventListener('keydown',e=>{if(keypadOverlay.classList.contains('open')&&/^[0-9]$/.test(e.key))pressKey(e.key);if(e.key==='Escape'){modalOverlay.classList.remove('open');keypadOverlay.classList.remove('open')}});
+})();
+</script>
+</body>
+</html>
